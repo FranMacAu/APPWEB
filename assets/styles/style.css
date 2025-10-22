@@ -1,4 +1,4 @@
-/* --- Estilos Generales --- */
+/* --- Estilo General --- */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -8,9 +8,9 @@ body {
     line-height: 1.6;
 }
 
-/* --- Header y Navegación --- */
+/* --- Header --- */
 header {
-    background-color: #333;
+    background-color: #8aa064;
     color: #fff;
     padding: 1rem 0;
     text-align: center;
@@ -22,18 +22,18 @@ header h1 {
 }
 
 nav ul {
-    list-style: none; /* Quita los puntos de la lista */
+    list-style: none; 
     padding: 0;
 }
 
 nav ul li {
-    display: inline; /* Pone los elementos uno al lado del otro */
+    display: inline; 
     margin: 0 15px;
 }
 
 nav ul li a {
     color: #fff;
-    text-decoration: none; /* Quita el subrayado */
+    text-decoration: none; 
     font-weight: bold;
 }
 
@@ -43,31 +43,31 @@ nav ul li a:hover {
 
 /* --- Contenido Principal --- */
 main {
-    /* Centra el contenido y le da un ancho máximo */
     max-width: 900px; 
     margin: 20px auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 /* --- Footer --- */
 footer {
     text-align: center;
     padding: 1rem 0;
-    background-color: #333;
+    background-color: #8aa064;
     color: #fff;
     margin-top: 20px;
 }
 
-/* --- Estilos Específicos del Formulario --- */
+/* --- Formulario --- */
 .form-group {
     margin-bottom: 15px;
 }
 
 .form-group label {
-    display: block; /* Hace que el label ocupe su propia línea */
+    display: block; 
     margin-bottom: 5px;
 }
 
@@ -75,11 +75,10 @@ footer {
 .form-group input[type="email"],
 .form-group input[type="password"],
 .form-group input[type="date"] {
-    width: 100%; /* Ocupa todo el ancho disponible */
+    width: 100%; 
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    /* Asegura que el padding no "rompa" el 100% de ancho */
     box-sizing: border-box; 
 }
 
@@ -98,8 +97,6 @@ button[type="submit"]:hover {
 }
 
 .header-logo {
-    /* tamaño del logo
-       '1.2em' lo hace un 20% más grande que el texto del h1. */
     height: 1.2em; 
     width: auto; 
     vertical-align: middle; 
