@@ -1,44 +1,80 @@
+/* --- Paleta de Colores y Variables --- */
+:root {
+    /* Paleta de La Plantería */
+    --color-primario: #8aa064;    /* Tu verde principal */
+    --color-secundario: #5e7a37;  /* Un verde más oscuro para botones/links */
+    --color-fondo: #f8f8f6;       /* Un beige/blanco "cálido" para el fondo */
+    --color-texto: #333333;       /* Gris oscuro (no negro puro) */
+    --color-blanco: #ffffff;      /* Blanco puro para las "tarjetas" */
+    --color-bordes: #e0e0e0;      /* Un gris suave para bordes */
+}
+
 /* --- Estilo General --- */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: var(--color-fondo); 
+    color: var(--color-texto); 
+    
     line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* --- Header --- */
 header {
-    background-color: #8aa064;
+    background-color: var(--color-primario);
     color: #fff;
     padding: 1rem 0;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-header h1 {
+.header-logo {
+    height: 1.5em;
+    width: auto;
+    margin-left: 0.1em;
+    vertical-align: -0.2em;
+}
+
+.logo-container h1 {
     margin: 0;
     font-size: 2.5rem;
+}
+
+.logo-container {
+    color: #fff; 
+    text-decoration: none; 
+    padding-left: 2em;
+    align-items: center;
 }
 
 nav ul {
     list-style: none; 
     padding: 0;
-}
-
-nav ul li {
-    display: inline; 
-    margin: 0 15px;
+    margin: 0;
+    display: flex;
+    gap: 1.5rem;
 }
 
 nav ul li a {
-    color: #fff;
-    text-decoration: none; 
-    font-weight: bold;
+ color: #fff;
+ text-decoration: none; 
+ font-weight: bold;
+    font-size: 1rem;
+    padding-bottom: 5px; /* Espacio para el borde de abajo */
+
+    /* Efecto de borde sutil */
+    border-bottom: 2px solid transparent; /* Borde invisible */
+    transition: border-color 0.3s ease; /* Transición suave */
 }
 
 nav ul li a:hover {
-    text-decoration: underline;
+ /* Al hacer hover, el borde transparente se hace blanco */
+ border-bottom-color: #fff; 
 }
 
 /* --- Contenido Principal --- */
@@ -55,19 +91,38 @@ main {
 footer {
     text-align: center;
     padding: 1rem 0;
-    background-color: #8aa064;
+    background-color: var(--color-primario);
     color: #fff;
     margin-top: 20px;
 }
 
-/* --- Formulario --- */
+/* --- Estilos de Formulario --- */
+.form-container {
+    max-width: 500px; /* Ancho máximo del formulario */
+    margin: 2rem auto; /* Centrado (2rem arriba/abajo, auto izq/der) */
+    padding: 2.5rem; /* Espacio interno generoso */
+    background-color: var(--color-blanco);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+}
+
+/* Títulos dentro del formulario */
+.form-container h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+/* --- Formulario (Inputs y Botón) --- */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 1.5rem; /* Más espacio */
 }
 
 .form-group label {
     display: block; 
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem; /* Más espacio */
+    font-weight: 600; /* Texto de label más fuerte */
 }
 
 .form-group input[type="text"],
@@ -75,29 +130,28 @@ footer {
 .form-group input[type="password"],
 .form-group input[type="date"] {
     width: 100%; 
-    padding: 8px;
-    border: 1px solid #ccc;
+    padding: 12px; /* Inputs más altos */
+    border: 1px solid var(--color-bordes); /* Borde suave */
     border-radius: 4px;
     box-sizing: border-box; 
+    font-size: 1rem; /* Asegura que el texto sea legible */
 }
 
 button[type="submit"] {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
+    background-color: var(--color-secundario); /* ¡Usamos la variable! */
+    color: var(--color-blanco);
+    padding: 12px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
+    font-weight: 600;
+    width: 100%; /* Botón de ancho completo */
+    text-transform: uppercase; /* MAYÚSCULAS */
+    letter-spacing: 1px; /* Espacio entre letras */
+    transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
-    background-color: #555;
-}
-
-.header-logo {
-    height: 1.2em; 
-    width: auto; 
-    vertical-align: middle; 
-    margin-left: 8px; 
+    background-color: var(--color-primario); /* Tono más claro al hacer hover */
 }
