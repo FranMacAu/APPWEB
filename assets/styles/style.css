@@ -1,17 +1,17 @@
 /* --- Paleta de Colores y Variables --- */
 :root {
     /* Paleta de La Plantería */
-    --color-primario: #8aa064;    /* Tu verde principal */
-    --color-secundario: #5e7a37;  /* Un verde más oscuro para botones/links */
-    --color-fondo: #f8f8f6;       /* Un beige/blanco "cálido" para el fondo */
+    --color-primario: #738903;    /* Tu verde principal */
+    --color-secundario: #B9BF04;  /* Un verde más oscuro para botones/links */
+    --color-fondo: #D9D4BA;       /* Un beige/blanco "cálido" para el fondo */
     --color-texto: #333333;       /* Gris oscuro (no negro puro) */
-    --color-blanco: #ffffff;      /* Blanco puro para las "tarjetas" */
-    --color-bordes: #e0e0e0;      /* Un gris suave para bordes */
+    --color-blanco: #F2EDE4;      /* Blanco puro para las "tarjetas" */
+    --color-bordes: #59412D;      /* Un gris suave para bordes */
 }
 
 /* --- Estilo General --- */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Gill Sans', Verdana;
     margin: 0;
     padding: 0;
     background-color: var(--color-fondo); 
@@ -25,6 +25,7 @@ body {
 
 /* --- Header --- */
 header {
+    font-family: 'Segoe Script';
     background-color: var(--color-primario);
     color: #fff;
     padding: 1rem 0;
@@ -54,7 +55,8 @@ header {
 
 nav ul {
     list-style: none; 
-    padding: 0;
+    padding: 1em;
+    padding-right: 2em;
     margin: 0;
     display: flex;
     gap: 1.5rem;
@@ -85,6 +87,7 @@ main {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 /* --- Footer --- */
@@ -98,8 +101,9 @@ footer {
 
 /* --- Estilos de Formulario --- */
 .form-container {
-    max-width: 500px; /* Ancho máximo del formulario */
-    margin: 2rem auto; /* Centrado (2rem arriba/abajo, auto izq/der) */
+    max-width: 1500px; /* Ancho máximo del formulario */
+    width: 40vw;
+    margin: 1rem auto; /* Centrado (2rem arriba/abajo, auto izq/der) */
     padding: 2.5rem; /* Espacio interno generoso */
     background-color: var(--color-blanco);
     border-radius: 8px;
@@ -154,4 +158,83 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     background-color: var(--color-primario); /* Tono más claro al hacer hover */
+}
+
+
+/* Card de producto */
+.product-card {
+    width: 300px; /* Ancho de la tarjeta */
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Para que la imagen no se salga de los bordes redondeados */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efecto hover para la tarjeta */
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor de la imagen */
+.product-image-container {
+    width: 100%;
+    height: 250px; /* Altura fija para la imagen */
+    overflow: hidden;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Asegura que la imagen cubra el espacio sin deformarse */
+}
+
+/* Contenedor de la información */
+.product-info {
+    padding: 20px;
+    text-align: center; /* Centra el texto y el botón */
+}
+
+.product-category {
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.product-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin: 10px 0;
+}
+
+.product-price {
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: #007bff; /* Un color de acento para el precio */
+    margin: 0 0 15px 0;
+}
+
+/* Botón de "Agregar al Carrito" */
+.add-to-cart-btn {
+    display: inline-block;
+    width: 100%; 
+    padding: 12px;
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #0056b3;
 }
