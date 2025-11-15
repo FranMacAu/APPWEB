@@ -3,81 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Plantería - Tienda Online</title>
+    <title>Productos - La Plantería</title>
     <link rel="stylesheet" href="../assets/styles/style.css">
 </head>
 <body>
 
-    <header>
-        <a href="productos.html" class="logo-container">
-        <h1>
-          La Plantería 
-          <img src="../assets/img/icono_planta.png" alt="Icono" class="header-logo">
-        </h1>
-    </a>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Inicio</a></li>
-                <li><a href="productos.html">Productos</a></li>
-                <li><a href="registro.html">Registrarse</a></li>
-                <li><a href="login.html">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+    <header id="main-header"></header>
+
     <main>
-        <div class="contenedor-productos">
-            <div class="product-card">
-                <div class="product-image-container">
-                    <img src="../assets/img/plantas cool.jpg" alt="planta.jpg" class="product-image">
-                </div>
-                <div class="product-info">
-                    <span class="product-category">Plantas de Interior</span>
-                    <h3 class="product-title">Plantas Chevere</h3>
-                    <p class="product-price">$99.99</p>
-                    <button class="add-to-cart-btn">Agregar al Carrito</button>
-                </div>
+        <section class="featured-products">
+            <h2>Todos Nuestros Productos Disponibles</h2>
+            
+            <!-- El grid se llena desde js -->
+            <div id="product-grid" class="product-grid">
+                
             </div>
-
-            <div class="product-card">
-                <div class="product-image-container">
-                    <img src="../assets/img/plantas cool.jpg" alt="planta.jpg" class="product-image">
-                </div>
-                <div class="product-info">
-                    <span class="product-category">Plantas de Exterior</span>
-                    <h3 class="product-title">Cerezo Japonés</h3>
-                    <p class="product-price">$149.99</p>
-                    <button class="add-to-cart-btn">Agregar al Carrito</button>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image-container">
-                    <img src="../assets/img/plantas cool.jpg" alt="planta.jpg" class="product-image">
-                </div>
-                <div class="product-info">
-                    <span class="product-category">Plantas Tristes</span>
-                    <h3 class="product-title">Plantas Deprimidas</h3>
-                    <p class="product-price">$9.99</p>
-                    <button class="add-to-cart-btn">Agregar al Carrito</button>
-                </div>
-            </div>
-
-            <div class="product-card">
-                <div class="product-image-container">
-                    <img src="../assets/img/plantas cool.jpg" alt="planta.jpg" class="product-image">
-                </div>
-                <div class="product-info">
-                    <span class="product-category">Plantas de Interior</span>
-                    <h3 class="product-title">Plantas cool</h3>
-                    <p class="product-price">$99.99</p>
-                    <button class="add-to-cart-btn">Agregar al Carrito</button>
-                </div>
-            </div>
-        </div>
+        </section>
     </main>
+
     <footer>
         <p>&copy; 2025 - Proyecto Aplicaciones Web</p>
     </footer>
 
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/components.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

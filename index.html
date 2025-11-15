@@ -8,33 +8,34 @@
 </head>
 <body>
 
-    <header>
-        <a href="index.html" class="logo-container">
-        <h1>
-          La Plantería 
-          <img src="assets/img/icono_planta.png" alt="Icono" class="header-logo">
-        </h1>
-    </a>
-        <nav>
-            <ul>
-                <li><a href="index.html">Inicio</a></li>
-                <li><a href="pages/productos.html">Productos</a></li>
-                <li><a href="pages/registro.html">Registrarse</a></li>
-                <li><a href="pages/login.html">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+    <header id="main-header"></header>
 
     <main>
-        <div class="home-banner">
-            <h2>Sitio en construcción</h2>
-            <p>Pronto podrás disfrutar de nuestras plantas.</p>
-        </div>
-        </main>
+        <section class="hero" >
+            <h2>Bienvenido a La Plantería</h2>
+            <p>Plantas para tu hogar</p>
+        </section>
+
+        <section class="home-banner">
+            <h2>Llená de vida tus espacios</h2>
+            <p>Descubre nuestra increíble selección de plantas de interior y exterior.</p>
+            <!-- Este botón/link lleva a la página de productos -->
+            <a href="pages/productos.html" class="btn">Ver Productos Disponibles</a>
+        </section>
+<!--
+        <section class="featured-products">
+            <h2>Productos Destacados</h2>
+            <div id="product-grid" class="product-grid"></div>-->
+        </section>
+    </main>
 
     <footer>
         <p>&copy; 2025 - Proyecto Aplicaciones Web</p>
-    </footer>
+    </footer>   
 
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
+
 </html>
