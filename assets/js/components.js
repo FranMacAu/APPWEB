@@ -1,19 +1,53 @@
-// NAVBAR
-
+// NAVBAR 
 function renderNavbar(linksArray) {
-    const linksHTML = linksArray.map(link => {
-        const logoPath = window.location.pathname.includes("/pages/") ? "../" : "";
-        
-        const isActive = window.location.pathname.endsWith(link.href.replace("../", "").replace("pages/", ""));
-        const activeClass = isActive ? "active" : ""; 
-
-        return `<li><a href="${logoPath}${link.href}" class="${activeClass}">${link.titulo}</a></li>`;
-    }).join(""); 
-
-    // logout
+    // Detecta si estamos en /pages/ o no
     const logoPath = window.location.pathname.includes("/pages/") ? "../" : "";
+    // Obtiene la ruta incluyendo los parámetros (categoría)
+    const currentPath = window.location.pathname + window.location.search;
+
+    const linksHTML = linksArray.map(link => {
+        
+        let isActive = false;
+        let subLinksHTML = "";
+
+        if (link.subLinks) {
+            // si tiene subLinks, hace un dropdown 
+            subLinksHTML = `
+                <ul class="dropdown-menu">
+                    ${link.subLinks.map(subLink => {
+                        const fullSubLinkHref = `${logoPath}${subLink.href}`;
+                        // Verificamos si este sub-link es el activo
+                        if (currentPath.endsWith(subLink.href)) {
+                            isActive = true; // Si un hijo está activo, el padre también
+                        }
+                        return `<li><a href="${fullSubLinkHref}">${subLink.titulo}</a></li>`;
+                    }).join("")}
+                </ul>
+            `;
+            
+            // Verificamos si el link padre ("Productos Todos") está activo
+            if (currentPath.endsWith(link.href)) {
+                isActive = true;
+            }
+
+            const activeClass = isActive ? "active" : "";
+            // Añadimos la clase 'dropdown-parent' al <li>
+            return `
+                <li class="dropdown-parent ${activeClass}">
+                    <a href="${logoPath}${link.href}">${link.titulo}</a>
+                    ${subLinksHTML}
+                </li>
+            `;
+        } else {
+            //  Si es un link normal
+            if (currentPath.endsWith(link.href)) {
+                isActive = true;
+            }
+            const activeClass = isActive ? "active" : "";
+            return `<li class="${activeClass}"><a href="${logoPath}${link.href}">${link.titulo}</a></li>`;
+        }
+    }).join(""); 
     
-    // header
     return `
         <a href="${logoPath}index.html" class="logo-container">
             <h1>
@@ -24,8 +58,7 @@ function renderNavbar(linksArray) {
         <nav>
             <ul>
                 ${linksHTML}
-                <!-- Añadimos el link de Logout -->
-                <li><a href="#" id="logoutBtn">Cerrar Sesión</a></li>
+                <li><a href="#" id="logoutBtn" class="logout-btn">Cerrar Sesión</a></li>
             </ul>
         </nav>
     `;

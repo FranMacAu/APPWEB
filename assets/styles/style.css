@@ -81,6 +81,55 @@ nav ul li a:hover {
     border-bottom-color: #fff; 
 }
 
+/*  Estilos del Dropdown  */
+
+/* de donde se anclan los hijos */
+nav ul li.dropdown-parent {
+    position: relative;
+}
+
+/* el menú está oculto. */
+.dropdown-menu {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    top: 100%; /* Se posiciona justo debajo del <li> padre */
+    left: 0;
+    background-color: var(--color-primario); 
+    border-radius: 0 0 8px 8px; 
+    padding: 0.5rem 0;
+    margin: 0;
+    list-style: none; 
+    min-width: 200px; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 100; /* Asegura que esté por encima */
+}
+
+.dropdown-menu li {
+    width: 100%;
+    border-top: 1px solid #000000;
+}
+
+.dropdown-menu li a {
+    padding: 0.05rem 1.5rem;
+    display: block; /* Hace que el link ocupe todo el <li> */
+    width: 100%;
+    box-sizing: border-box; 
+    border-bottom: none; 
+    text-align: left; 
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dropdown-menu li a:hover {
+    background-color: var(--color-secundario); 
+    border-bottom: none; 
+}
+
+/* Mostrar el dropdown al hacer hover en el <li> padre */
+nav ul li.dropdown-parent:hover > .dropdown-menu {
+    display: block;
+}
+
 /* --- Contenido Principal --- */
 main {
     /*display: grid;
@@ -109,13 +158,70 @@ footer {
 
 /* --- Estilos de Formulario --- */
 .form-container {
-    max-width: 100%; 
-    /*width: 40vw;*/
+    max-width: 1500px; 
+    width: 40vw;
+    min-width: 300px;
     margin: 1rem auto; 
     padding: 2.5rem; 
     background-color: var(--color-blanco);
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+}
+
+/* --- Banner de iniciar sesión (en Productos) --- */
+.login-prompt-banner {
+    max-width: 600px;
+    margin: 2rem auto; /* Centrado */
+    padding: 2.5rem;
+    background-color: var(--color-blanco);
+    border: 1px solid var(--color-bordes);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.login-prompt-banner h3 {
+    font-size: 1.8rem;
+    color: var(--color-primario);
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.login-prompt-banner p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.login-prompt-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap; /* para celu */
+}
+
+/* la clase .btn ya existe */
+.login-prompt-buttons .btn {
+    text-decoration: none;
+    width: auto; 
+    padding: 12px 24px;
+    background-color: var(--color-secundario); 
+}
+
+.login-prompt-buttons .btn:hover {
+    background-color: var(--color-primario);
+}
+
+/* botón "secundario" para el registro */
+.login-prompt-buttons .btn.btn-secondary {
+    background-color: var(--color-blanco);
+    color: var(--color-primario);
+    border: 2px solid var(--color-primario);
+}
+
+.login-prompt-buttons .btn.btn-secondary:hover {
+    background-color: #f7f7f7;
+    color: var(--color-secundario);
+    border-color: var(--color-secundario);
 }
 
 /* Títulos dentro del formulario */
@@ -167,13 +273,29 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: var(--color-primario); /* Tono más claro al hacer hover */
 }
+.form-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.form-link a {
+    color: var(--color-primario);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.form-link a:hover {
+    text-decoration: underline;
+}
 
 /* Cartel de inicio */
 .hero {
     text-align: center; 
-    padding: 4rem 0;   
+    padding: 2rem 0;   
     background-color: rgba(248, 244, 224, 0.834); /*var(--color-fondo) con transparencia  */
     margin-bottom: 2rem;
+    border-radius: 8px;
 }
 .home-banner{
     max-width: 900px; 
@@ -206,6 +328,7 @@ button[type="submit"]:hover {
     padding: 10px 15px;
     color: var(--color-blanco);
     border-radius: 3%;
+    margin-top: 5em;
 }
 
 /* productos */
@@ -214,6 +337,7 @@ button[type="submit"]:hover {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     justify-items: center; /* Centra las tarjetas si queda espacio */
+    margin-bottom: 2em;
 }
 
 .product-card {

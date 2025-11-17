@@ -1,0 +1,82 @@
+[
+    {
+        "id": 1,
+        "titulo": "Monstera Deliciosa",
+        "descripcion": "Una planta tropical fácil de cuidar, perfecta para interiores luminosos.",
+        "precio": 1200,
+        "imagen": "../assets/img/monstera.webp",
+        "categoria": "Interior"
+    },
+    {
+        "id": 2,
+        "titulo": "Ficus Lyrata",
+        "descripcion": "Conocido como 'árbol lira', requiere más luz y cuidados específicos.",
+        "precio": 1500,
+        "imagen": "ficus.jpg",
+        "categoria": "Interior"
+    },
+    {
+        "id": 3,
+        "titulo": "Pothos",
+        "descripcion": "Ideal para principiantes. Crece rápido y tolera poca luz.",
+        "precio": 800,
+        "imagen": "../assets/img/potus.webp",
+        "categoria": "Interior"
+    },
+    {
+        "id": 4,
+        "titulo": "Lavanda",
+        "descripcion": "Planta aromática que ama el sol directo. Perfecta para balcones.",
+        "precio": 500,
+        "imagen": "lavanda.jpg",
+        "categoria": "Exterior"
+    },
+    {
+        "id": 5,
+        "titulo": "Helecho de Boston",
+        "descripcion": "Prefiere la sombra y alta humedad. Ideal para baños iluminados.",
+        "precio": 750,
+        "imagen": "helecho.jpg",
+        "categoria": "Exterior"
+    },
+    {
+        "id": 6,
+        "titulo": "Suculenta Echeveria",
+        "descripcion": "Pequeña, resistente y necesita muy poca agua y mucho sol.",
+        "precio": 350,
+        "imagen": "suculenta.jpg",
+        "categoria": "Suculentas"
+    },
+    {
+        "id": 7,
+        "titulo": "Cactus San Pedro",
+        "descripcion": "Un cactus columnar de crecimiento rápido que puede alcanzar gran altura.",
+        "precio": 900,
+        "imagen": "cactus.jpg",
+        "categoria": "Suculentas"
+    },
+    {
+        "id": 8,
+        "titulo": "Planta Aleatoria de Interior",
+        "descripcion": "Monstera, Potus, Ficus Lyrata, Crotón, entre otras...",
+        "precio": 1200,
+        "imagen": "../assets/img/plantas_interior.jpg",
+        "categoria": "Interior"
+    },
+    {
+        "id": 9,
+        "titulo": "Planta Aleatoria de Exterior",
+        "descripcion": "Lavanda, Geranios, Suculentas, Cactus, entre otras...",
+        "precio": 1200,
+        "imagen": "../assets/img/plantas_exterior.webp",
+        "categoria": "Interior"
+    },
+    {
+        "id": 10,
+        "titulo": "Crasa Aleatoria",
+        "descripcion": "Árbol de Jade, Aloe Vera, Cola de Burro, Echeveria, entre otras...",
+        "precio": 1200,
+        "imagen": "../assets/img/monstera.webp",
+        "categoria": "Interior"
+    }
+]

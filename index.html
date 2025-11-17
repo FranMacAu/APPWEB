@@ -8,7 +8,22 @@
 </head>
 <body>
 
-    <header id="main-header"></header>
+    <header id="main-header">
+        <a href="index.html" class="logo-container">
+            <h1>
+              La Plantería 
+              <img src="assets/img/icono_planta.png" alt="Icono" class="header-logo">
+            </h1>
+        </a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="pages/productos.html">Productos</a></li>
+                <li><a href="pages/registro.html">Registrarse</a></li>
+                <li><a href="pages/login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <main>
         <section class="hero" >
@@ -19,13 +34,13 @@
         <section class="home-banner">
             <h2>Llená de vida tus espacios</h2>
             <p>Descubre nuestra increíble selección de plantas de interior y exterior.</p>
+            <section class="featured-products">
+                <h2>Productos Destacados</h2>
+                <div id="product-grid" class="product-grid"></div>
+            </section>
             <!-- Este botón/link lleva a la página de productos -->
+             <div style="height: 1em;"> <!-- separador --> </div>
             <a href="pages/productos.html" class="btn">Ver Productos Disponibles</a>
-        </section>
-<!--
-        <section class="featured-products">
-            <h2>Productos Destacados</h2>
-            <div id="product-grid" class="product-grid"></div>-->
         </section>
     </main>
 
