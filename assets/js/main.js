@@ -87,8 +87,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     <h3>Esta sección es solo para miembros.</h3>
                     <p>Para ver nuestros productos, por favor inicia sesión o crea una cuenta.</p>
                     <div class="login-prompt-buttons">
-                        <a href="login.html" class="btn">Iniciar Sesión</a>
-                        <a href="registro.html" class="btn btn-secondary">Registrarse</a>
+                        <a href="/pages/login.html" class="btn">Iniciar Sesión</a>
+                        <a href="/pages/registro.html" class="btn btn-secondary">Registrarse</a>
                     </div>
                 </div>
             `;
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 setTimeout(() => {
                     registroForm.reset();
-                    window.location.href = "login.html"; 
+                    window.location.href = "/pages/login.html"; 
                 }, 2000); // 2 segundos
 
             } catch (error) {
