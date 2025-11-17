@@ -17,54 +17,48 @@ document.addEventListener("DOMContentLoaded", function() {
         if (isLoggedIn){
             async function cargarYRenderizarProductos() {
             try {
-                // Determina la ruta correcta según ubicación actual
-                const pathPrefix = window.location.pathname.includes("/pages/") ? "../" : "";
-                const jsonPath = `${pathPrefix}data/productos.json`;
+                    const pathPrefix = window.location.pathname.includes("/pages/") ? "../" : "";
+                    const jsonPath = `${pathPrefix}data/productos.json`;
+                    const response = await fetch(jsonPath);
+                    if (!response.ok) throw new Error(`Error HTTP! status: ${response.status}`);
+                    
+                    const productos = await response.json();
+                    
+                    // filtrado de categorías
+                    
+                    // lee los parámetros de la URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const categoria = urlParams.get('categoria'); 
+                    
+                    let productosParaMostrar = [];
+                    const esPaginaPrincipal = !window.location.pathname.includes("/pages/");
 
-                // trae el JSON
-                const response = await fetch(jsonPath);
-                
-                // Verificamos si la petición fue exitosa
-                if (!response.ok) {
-                    throw new Error(`Error HTTP! status: ${response.status}`);
+                    if (esPaginaPrincipal) {
+                        // Lógica para el Home (2 por cat)
+                        const categorias = ["Interior", "Exterior", "Crasas"];
+                        categorias.forEach(cat => {
+                            const productosCategoria = productos.filter(p => p.categoria === cat).slice(0, 2); 
+                            productosParaMostrar.push(...productosCategoria); 
+                        });
+                    } else if (categoria) {
+                        //Si hay una categoría en la URL, filtramos
+                        productosParaMostrar = productos.filter(p => p.categoria === categoria);
+                    } else {
+                        // sin categoría
+                        productosParaMostrar = productos;
+                    }
+                    
+                    // --- Renderizamos solo los productos filtrados ---
+                    const allCardsHTML = productosParaMostrar.map(prod => renderProductCard(prod)).join("");
+                    productsContainer.innerHTML = allCardsHTML;
+
+                    // Activamos los botones +/-
+                    actualizarBotonesDeCantidad();
+
+                } catch (error) {
+                    console.error("Error al cargar los productos:", error);
+                    productsContainer.innerHTML = "<p>Error al cargar productos.</p>";
                 }
-
-                // Convertimos la respuesta a JSON
-                const productos = await response.json();
-
-                // Leemos los parámetros de la URL
-                const urlParams = new URLSearchParams(window.location.search);
-                const categoria = urlParams.get('categoria'); 
-                let productosParaMostrar = [];
-                const esPaginaPrincipal = !window.location.pathname.includes("/pages/");
-
-                if (esPaginaPrincipal) {
-                    const categorias = ["Interior", "Exterior", "Crasas"];
-                    categorias.forEach(cat => {
-                        const productosCategoria = productos
-                            .filter(p => p.categoria === cat)
-                            .slice(0, 2); 
-                        productosParaMostrar.push(...productosCategoria); 
-                    });
-                }else if (categoria) {
-                    // Si hay una categoría en la URL
-                    productosParaMostrar = productos.filter(p => p.categoria === categoria);
-                } else {
-                    // sin categoría
-                    productosParaMostrar = productos;
-                }
-                
-                // Ya con los productos, renderizamos las cards
-                const allCardsHTML = productos.map(prod => renderProductCard(prod)).join("");
-                productsContainer.innerHTML = allCardsHTML;
-
-                // ahora metemos la lógica de los botes +-
-                actualizarBotonesDeCantidad();
-
-            } catch (error) {
-                console.error("Error al cargar los productos:", error);
-                productsContainer.innerHTML = "<p>Error al cargar productos. Intente más tarde.</p>";
-            }
         }
     
         
