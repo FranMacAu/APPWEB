@@ -3,6 +3,15 @@ document.addEventListener("DOMContentLoaded", function() {
     // --- ESTADO DE AUTENTICACIÓN ---
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
 
+    const loader = document.getElementById("loader-overlay");
+    function showLoader() {
+        if (loader) loader.classList.add("show");
+    }
+    function hideLoader() {
+        // (Aunque no la usamos mucho, es bueno tenerla)
+        if (loader) loader.classList.remove("show");
+    }
+
     // --- RENDERIZADO DEL NAVBAR 
     const headerContainer = document.getElementById("main-header");
     if (headerContainer && isLoggedIn) {
@@ -93,11 +102,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
         loginForm.addEventListener("submit", function(event) {
-            event.preventDefault(); // no envía para que no dé error de página no encontrada y poder seguir navegando
+            event.preventDefault(); 
             
-            alert("¡Login exitoso! Redirigiendo...");
-            localStorage.setItem('isLoggedIn', 'true'); //guardamos estado de login
-            window.location.href = "../index.html"; 
+            showLoader(); 
+            setTimeout(() => {
+                localStorage.setItem('isLoggedIn', 'true');
+                window.location.href = "../index.html"; 
+            }, 1500); // 1.5 segundos de espera
         });
     }
 
@@ -106,10 +117,15 @@ document.addEventListener("DOMContentLoaded", function() {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", function(event) {
             event.preventDefault();
-            alert("Cerrando sesión...");
-            localStorage.removeItem('isLoggedIn');
-            const pathPrefix = window.location.pathname.includes("/pages/") ? "" : "pages/";
-            window.location.href = `${pathPrefix}login.html`;
+            showLoader();
+
+            // 2. Simulamos la espera
+            setTimeout(() => {
+                // 3. Hacemos la acción
+                localStorage.removeItem('isLoggedIn');
+                const loginPath = window.location.pathname.includes("/pages/") ? "" : "pages/";
+                window.location.href = `${loginPath}login.html`;
+            }, 1000); // 1 segundo
         });
     }
 
@@ -136,31 +152,41 @@ document.addEventListener("DOMContentLoaded", function() {
     if (registroForm) { 
         registroForm.addEventListener("submit", function(event) {
             event.preventDefault(); // no envía para que no dé error de página no encontrada y poder seguir navegando
-            
-            // inputs
-            const passwordInput = document.getElementById("password");
-            const confirmPasswordInput = document.getElementById("confirmPassword");
-            
-            // Obtener sus valores
-            const password = passwordInput.value;
-            const confirmPassword = confirmPasswordInput.value;
+            try{
+                // inputs
+                const passwordInput = document.getElementById("password");
+                const confirmPasswordInput = document.getElementById("confirmPassword");
+                
+                // Obtener sus valores
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
 
-            // Valicadiones
-            
-            if (password.length < 8) {
-                alert("Error: La contraseña debe tener al menos 8 caracteres.");
-                return; 
+                // Valicadiones
+                
+                if (password.length < 8) {
+                    alert("Error: La contraseña debe tener al menos 8 caracteres.");
+                    return; 
+                }
+
+                if (password !== confirmPassword) {
+                    alert("Error: Las contraseñas no coinciden.");
+                    return; 
+                }
+
+                showLoader();
+                
+                setTimeout(() => {
+                    registroForm.reset();
+                    window.location.href = "login.html"; 
+                }, 2000); // 2 segundos
+
+            } catch (error) {
+                console.error("Falló la validación:", error);
+                hideLoader(); // Si la validación falla, ocultamos el loader
             }
-
-            if (password !== confirmPassword) {
-                alert("Error: Las contraseñas no coinciden.");
-                return; 
-            }
-
-            alert("¡Registro exitoso!");
             
-            window.location.href = "login.html"; 
             
+        
             // registroForm.reset();
         });
     }
