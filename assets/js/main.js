@@ -323,7 +323,6 @@ document.addEventListener("DOMContentLoaded", function() {
             container.innerHTML = carrito.map(item => {
                 const subtotal = item.precio * item.cantidad;
                 total += subtotal;
-                // Ruta de imagen corregida para que funcione desde /pages/
                 const imagePath = `../assets/img/${item.imagen}`;
 
                 return `
@@ -352,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     
-// --- LÓGICA DE CARRITO DE COMPRAS
+// --- LÓGICA DE CARRITO 
     
     function activarBotonesAgregarCarrito(listaProductos) {
         const botones = document.querySelectorAll(".add-to-cart-btn");
@@ -479,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function() {
             `;
         }).join("");
 
-        // 3. ACTUALIZAR TOTAL (¡Esto faltaba en tu código!)
+        // 3. ACTUALIZAR TOTAL 
         if (totalSpan) totalSpan.textContent = `$${totalAcumulado}`;
     }
 
