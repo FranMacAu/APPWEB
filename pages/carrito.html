@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - La Plantería</title>
+    <title>Mi Carrito - La Plantería</title>
     <link rel="stylesheet" href="../assets/styles/style.css">
 </head>
 <body>
 
+    <!-- Header Dinámico (se llena con JS) -->
     <header id="main-header">
-        <a href="index.html" class="logo-container">
+        <!-- Fallback por si JS falla o no hay login -->
+        <a href="../index.html" class="logo-container">
             <h1>
               La Plantería 
               <img src="../assets/img/icono_planta.png" alt="Icono" class="header-logo">
@@ -26,19 +28,24 @@
     </header>
 
     <main>
-        <section class="featured-products">
-            <h2>Todos Nuestros Productos Disponibles</h2>
+        <section class="cart-section">
+            <h2>Tu Carrito de Compras</h2>
             
-            <!-- El grid se llena desde js -->
-            <div id="product-grid" class="product-grid">
-                
+            <div id="cart-items-container" class="cart-items-container">
+                <!-- los artículos se inyectan acá -->
+                <p class="empty-cart-message">Tu carrito está vacío.</p>
+            </div>
+
+            <!-- Resumen -->
+            <div id="cart-summary" class="cart-summary hidden">
+                <div class="cart-total">
+                    <h3>Total: <span id="cart-total-price">$0</span></h3>
+                </div>
+                <button id="checkout-btn" class="btn">Finalizar Compra</button>
+                <button id="clear-cart-btn" class="btn btn-secondary">Vaciar Carrito</button>
             </div>
         </section>
     </main>
-
-    <div id="loader-overlay">
-        <div class="loader"></div>
-    </div>
 
     <footer>
         <p>&copy; 2025 - Proyecto Aplicaciones Web</p>
@@ -52,6 +59,8 @@
         <div id="toast-message" class="toast-message">
         </div>
     </div>
+
+    <!-- Scripts -->
     <script src="../assets/js/data.js"></script>
     <script src="../assets/js/components.js"></script>
     <script src="../assets/js/main.js"></script>

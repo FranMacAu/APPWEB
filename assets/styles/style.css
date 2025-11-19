@@ -317,7 +317,7 @@ button[type="submit"]:hover {
 .hero h2 {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--color-blanco); 
+    color: #dcd7cf ;
     margin: 0 0 0.5rem 0;
 }
 
@@ -328,14 +328,56 @@ button[type="submit"]:hover {
     margin: 0;
 }
 
-.home-banner{
-    max-width: 900px; 
-    margin: 20px auto;
-    padding: 20px;
-    background-color: var(--color-blanco);
-    border-radius: 8px;
-    background-color: rgba(248, 244, 224, 0.834); 
+.home-banner {
     text-align: center;
+    padding: 4rem 1rem; 
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    color: var(--color-blanco); 
+}
+
+/* --- Overlay y Fondo --- */
+.home-banner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(23, 34, 16, 0.848); 
+    background-size: cover;
+    background-position: center center;
+    z-index: -1; /* Lo pone detrás del texto */
+}
+
+.home-banner h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-blanco); 
+    margin: 0 0 0.5rem 0;
+}
+
+.home-banner p {
+    font-size: 1rem;
+    color: var(--color-blanco);
+    opacity: 0.9;
+    margin: 0 0 2rem 0;
+}
+.home-banner .btn {
+    display: inline-block;
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.home-banner .btn:hover {
+    background-color: var(--color-primario);
 }
 
 .featured-products {
@@ -438,6 +480,7 @@ button[type="submit"]:hover {
     font-size: 1.25rem;
     font-weight: 600;
     min-width: 30px;
+    color: var(--color-texto)
 }
 
 .quantity-btn {
@@ -531,6 +574,171 @@ button[type="submit"]:hover {
         transform: rotate(360deg);
     }
 }
+
+/* --- Loader Overlay --- */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semi-transparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Muy alto para tapar todo */
+    
+    /* Oculto por defecto */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Clase para mostrarlo */
+.loader-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Spinner animado (CSS puro) */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid var(--color-bordes); /* Color base suave */
+    border-top: 5px solid var(--color-primario); /* Color activo */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- Estilos del Carrito de Compras (PEGAR AL FINAL) --- */
+
+.cart-section {
+    background-color: var(--color-blanco);
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.cart-section h2 {
+    text-align: center;
+    color: var(--color-primario);
+    margin-bottom: 2rem;
+}
+
+.cart-items-container {
+    width: 100%;
+    min-height: 100px; /* Evita que colapse si está vacío */
+}
+
+/* --- Estilos de cada ÍTEM (Fila) --- */
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-bordes);
+    gap: 1rem;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* Imagen del producto en el carrito */
+.cart-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+/* Información del producto */
+.cart-item-info {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.cart-item-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    color: var(--color-texto);
+    font-weight: 600;
+}
+
+.cart-item-info p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Precio */
+.cart-item-price {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: var(--color-primario);
+    min-width: 90px;
+    text-align: center;
+}
+
+/* Botón Eliminar */
+.cart-item-remove {
+    background: transparent;
+    border: none;
+    color: #ff6b6b;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-item-remove:hover {
+    color: #e03131;
+    transform: scale(1.1);
+}
+
+/* --- Responsive para Items --- */
+@media (max-width: 600px) {
+    .cart-item {
+        flex-direction: column;
+        text-align: center;
+        position: relative;
+        padding-bottom: 3rem;
+    }
+
+    .cart-item img {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 0.5rem;
+    }
+
+    .cart-item-info, .cart-item-price {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .cart-item-remove {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+}
+
 /* --- Responsive --- */
 
 @media (max-width: 768px) {
@@ -572,4 +780,57 @@ button[type="submit"]:hover {
         font-size: 1.5rem; 
     }
 
+    
+
+}
+
+.hidden {
+    display: none !important; /* El !important fuerza que se oculte */
+}
+/* --- Toast Notifications --- */
+/* Contenedor invisible que centra el mensaje */
+.toast-container {
+    position: fixed;
+    top: 20px; 
+    left: 50%;
+    transform: translateX(-50%); 
+    z-index: 10000; 
+    pointer-events: none; 
+    width: 90%; 
+    max-width: 400px; 
+    text-align: center;
+}
+
+/* El mensaje en sí  */
+.toast-message {
+    background-color: #333; 
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-family: 'Gill Sans', sans-serif;/
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    
+    /* Estado inicial: Oculto y un poco más arriba */
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Clase que JS añade para MOSTRAR el mensaje */
+.toast-message.show {
+    opacity: 1;
+    transform: translateY(0); /* Baja a su posición natural */
+}
+
+/* Éxito (Verde) */
+.toast-message.success {
+    background-color: var(--color-secundario); /* Tu verde #B9BF04 */
+    color: #fff;
+}
+
+/* Error (Rojo) */
+.toast-message.error {
+    background-color: #d32f2f;
+    color: #fff;
 }

@@ -81,7 +81,7 @@ function renderProductCard(producto) {
                     <button class="quantity-btn" data-id="${producto.id}" data-action="increase">+</button>
                 </div>
 
-                <a href="#" class="btn">Añadir al carrito</a>
+                <a href="#" class="btn add-to-cart-btn" data-id="${producto.id}">Añadir al carrito</a>
             </div>
         </div>
     `;
