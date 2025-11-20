@@ -385,7 +385,8 @@ button[type="submit"]:hover {
     width: 95%;
     background-color: rgba(217, 212, 186, 0.7); 
     border-radius: 25px;
-
+    margin: 0 auto; /* centra el contenedor respecto a su padre */
+    max-width: 1200px; 
 }
 
 .featured-products h2 {
