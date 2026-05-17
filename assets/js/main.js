@@ -9,56 +9,90 @@ document.addEventListener("DOMContentLoaded", function() {
         if (loader) loader.classList.add("show");
     }
     function hideLoader() {
-        // (Aunque no la usamos mucho, es bueno tenerla)
         if (loader) loader.classList.remove("show");
     }
 
-    // --- RENDERIZADO DEL NAVBAR 
-    const headerContainer = document.getElementById("main-header");
-    if (headerContainer && isLoggedIn) {
-        // renderNavbar viene de components.js, navLinks viene de data.js
-        headerContainer.innerHTML = renderNavbar(window.navLinks);
-    }
+// --- RENDERIZADO DEL NAVBAR (ahora dinámico)
+const headerContainer = document.getElementById("main-header");
 
-    // --- RENDERIZADO DE CARDS 
+if (headerContainer && isLoggedIn) {
+    async function cargarNavbar() {
+        try {
+            // Traemos las categorías del backend
+            const response = await fetch('http://localhost:3000/categorias');
+            const categorias = await response.json();
+
+            // Mapeamos los datos del back al formato que espera renderNavbar
+            const subLinksCategorias = categorias.map(cat => ({
+                titulo: cat.nombre,
+                href: `pages/productos.html?categoria=${cat.id}`
+            }));
+
+            // Armamos el array de navegación mezclando links fijos y dinámicos
+            const navLinksDinamicos = [
+                { titulo: "Inicio", href: "index.html" },
+                { 
+                    titulo: "Productos", 
+                    href: "pages/productos.html",
+                    subLinks: [
+                        { titulo: "Todos los productos", href: "pages/productos.html" },
+                        ...subLinksCategorias // Acá inyectamos las categorías de la base de datos
+                    ]
+                },
+                { titulo: "Carrito", href: "pages/carrito.html" }
+            ];
+
+            // Se lo mandamos a tu componente
+            headerContainer.innerHTML = renderNavbar(navLinksDinamicos);
+
+        } catch (error) {
+            console.error("Error al cargar categorías para el Navbar:", error);
+            // Fallback: si se cae el back, mostramos un menú básico
+            headerContainer.innerHTML = renderNavbar([{ titulo: "Inicio", href: "index.html" }]);
+        }
+    }
+    
+    cargarNavbar();
+}
+
+   // --- RENDERIZADO DE CARDS 
     const productsContainer = document.getElementById("product-grid");
 
     if (productsContainer) {
         if (isLoggedIn){
             async function cargarYRenderizarProductos() {
-            try {
-                    const pathPrefix = window.location.pathname.includes("/pages/") ? "../" : "";
-                    const jsonPath = `${pathPrefix}data/productos.json`;
+                try {
+                    const URL_API = 'http://localhost:3000/productos';
                     
-                    const response = await fetch(jsonPath);
+                    const response = await fetch(URL_API);
                     if (!response.ok) throw new Error(`Error HTTP! status: ${response.status}`);
                     
                     const productos = await response.json();
                     
-                    // filtrado de categorías
-                    // lee los parámetros de la URL
+                    // Lee los parámetros de la URL (?categoria=1)
                     const urlParams = new URLSearchParams(window.location.search);
-                    const categoria = urlParams.get('categoria'); 
+                    const categoriaUrl = urlParams.get('categoria'); 
                     
                     let productosParaMostrar = [];
                     const esPaginaPrincipal = !window.location.pathname.includes("/pages/");
 
                     if (esPaginaPrincipal) {
-                        // Lógica para el Home (2 por cat)
-                        const categorias = ["Interior", "Exterior", "Crasas"];
-                        categorias.forEach(cat => {
-                            const productosCategoria = productos.filter(p => p.categoria === cat).slice(0, 2); 
+                        // 1 = Plantas de Interior | 5 = Plantas de Exterior | 6 = Crasas y Suculentas
+                        const categoriasHome = [1, 5, 6]; 
+                        
+                        categoriasHome.forEach(catId => {
+                            const productosCategoria = productos.filter(p => p.id_categoria === catId).slice(0, 2); 
                             productosParaMostrar.push(...productosCategoria); 
                         });
-                    } else if (categoria) {
-                        //Si hay una categoría en la URL, filtramos
-                        productosParaMostrar = productos.filter(p => p.categoria === categoria);
+                    } else if (categoriaUrl) {
+                        // CAMBIO: Filtramos usando id_categoria como número entero
+                        productosParaMostrar = productos.filter(p => p.id_categoria === parseInt(categoriaUrl));
                     } else {
-                        // sin categoría
+                        // Si entran a productos.html sin parámetros, muestra todo el catálogo
                         productosParaMostrar = productos;
                     }
                     
-                    // --- Renderizamos solo los productos filtrados ---
+                    // --- Renderizado usando el components.js actualizado ---
                     const allCardsHTML = productosParaMostrar.map(prod => renderProductCard(prod)).join("");
                     productsContainer.innerHTML = allCardsHTML;
 
@@ -67,20 +101,19 @@ document.addEventListener("DOMContentLoaded", function() {
                     activarBotonesAgregarCarrito(productos);
 
                 } catch (error) {
-                    console.error("Error al cargar los productos:", error);
-                    productsContainer.innerHTML = "<p>Error al cargar productos.</p>";
+                    console.error("Error al cargar los productos desde el Backend:", error);
+                    productsContainer.innerHTML = "<p>Error al cargar productos. Asegurate de tener el servidor corriendo.</p>";
                 }
-        }// Llamamos a la función para que se ejecute
-        cargarYRenderizarProductos();
-        }else {
-
-            // no está logueado
+            }
+            // Llamamos a la función para que se ejecute
+            cargarYRenderizarProductos();
+        } else {
+            // Caso: Usuario no logueado
             const titleElement = document.querySelector(".featured-products h2");
             if (titleElement) {
                 titleElement.textContent = "🔒 Contenido Protegido";
             }
 
-            // banner
             const loginPromptHTML = `
                 <div class="login-prompt-banner">
                     <h3>Esta sección es solo para miembros.</h3>
@@ -92,41 +125,64 @@ document.addEventListener("DOMContentLoaded", function() {
                 </div>
             `;
             
-            // lo inyectamos en el contenedor de la grilla
             productsContainer.innerHTML = loginPromptHTML;
         }
-        
     }
     // --- LÓGICA DE LOGIN 
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
-        loginForm.addEventListener("submit", function(event) {
+        loginForm.addEventListener("submit", async function(event) {
             event.preventDefault(); 
             
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
             showLoader(); 
-            setTimeout(() => {
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = "../index.html"; 
-            }, 1500); // 1.5 segundos de espera
+
+            try {
+                const response = await fetch('http://localhost:3000/usuarios/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const resultado = await response.json();
+
+                if (response.ok) {
+                    // Guardamos el estado y el email real que devolvió el back
+                    localStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('usuario', resultado.usuario.email);
+                    window.location.href = "../index.html"; 
+                } else {
+                    alert(resultado.error); // Muestra "El email o la contraseña son incorrectos."
+                    hideLoader();
+                }
+
+            } catch (error) {
+                console.error("Error de red en el login:", error);
+                alert("No se pudo conectar con el servidor para iniciar sesión.");
+                hideLoader();
+            }
         });
     }
 
     // --- LÓGICA DE LOGOUT
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", function(event) {
+    document.addEventListener("click", function(event) {
+        // Verificamos si el elemento clickeado es el botón de cerrar sesión
+        if (event.target && event.target.id === "logoutBtn") {
             event.preventDefault();
             showLoader();
 
-            // 2. Simulamos la espera
             setTimeout(() => {
-                // 3. Hacemos la acción
                 localStorage.removeItem('isLoggedIn');
+                sessionStorage.removeItem('usuario'); // Limpiamos el email de la sesión
+                
+                // Redirección inteligente según dónde estemos
                 const loginPath = window.location.pathname.includes("/pages/") ? "" : "pages/";
                 window.location.href = `${loginPath}login.html`;
-            }, 1000); // 1 segundo
-        });
-    }
+            }, 1000);
+        }
+    });
 
     // --- LÓGICA DE CANTIDAD (+/-) EN CARDS 
     function actualizarBotonesDeCantidad() {
@@ -174,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function() {
             // Remover del DOM después de la transición
             toast.addEventListener('transitionend', () => {
                 toast.remove();
-                // Si no quedan toasts, podemos quitar el contenedor (opcional)
+                // Si no quedan toasts, podemos quitar el contenedor
                 if (container && container.children.length === 0) container.remove();
             });
         }, duration);
@@ -203,78 +259,83 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function agregarAlLocalStorage(producto, cantidad) {
-    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    
-    // Verificamos si el producto ya estaba para no duplicarlo
-    const indice = carrito.findIndex(p => p.id === producto.id);
-    
-    if (indice !== -1) {
-        carrito[indice].cantidad += cantidad; // Sumamos cantidad
-    } else {
-        // Agregamos el producto nuevo con su cantidad
-        carrito.push({ ...producto, cantidad: cantidad });
-    }
-    
-    // Guardamos de vuelta en el navegador
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        const indice = carrito.findIndex(p => p.id === producto.id);
+        
+        if (indice !== -1) {
+            carrito[indice].cantidad += cantidad; // Sumamos cantidad
+        } else {
+            // Agregamos el producto nuevo con su cantidad
+            carrito.push({ ...producto, cantidad: cantidad });
+        }
+        
+        // Guardamos de vuelta en el navegador
+        localStorage.setItem('carrito', JSON.stringify(carrito));
 
-    // --- AQUÍ ESTÁ LA MODIFICACIÓN ---
-    // Usamos showToast si existe, o alert como fallback
-    const mensaje = `¡Agregaste ${cantidad} unidad(es) de "${producto.titulo}" al carrito!`;
-    
-    if (typeof showToast === "function") {
-        showToast(mensaje, "success");
-    } else {
-        alert(mensaje);
-    }
+        // Usamos showToast si existe, o alert como fallback
+        const mensaje = `¡Agregaste ${cantidad} unidad(es) de "${producto.nombre}" al carrito!`;
+        
+        if (typeof showToast === "function") {
+            showToast(mensaje, "success");
+        } else {
+            alert(mensaje);
+        }
 }
-
-    // --- Registro con validaciónes
+    // --- LÓGICA DE REGISTRO 
     const registroForm = document.getElementById("registroForm");
     if (registroForm) { 
-        registroForm.addEventListener("submit", function(event) {
-            event.preventDefault(); // no envía para que no dé error de página no encontrada y poder seguir navegando
-            try{
-                // inputs
-                const passwordInput = document.getElementById("password");
-                const confirmPasswordInput = document.getElementById("confirmPassword");
-                
-                // Obtener sus valores
-                const password = passwordInput.value;
-                const confirmPassword = confirmPasswordInput.value;
+        registroForm.addEventListener("submit", async function(event) {
+            event.preventDefault(); 
+            
+            // Capturamos los campos
+            const nombre = document.getElementById("nombre").value;
+            const apellido = document.getElementById("apellido").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
 
-                // Valicadiones
-                
-                if (password.length < 8) {
-                    alert("Error: La contraseña debe tener al menos 8 caracteres.");
-                    return; 
-                }
+            // Validaciones del lado del cliente
+            if (password.length < 8) {
+                alert("Error: La contraseña debe tener al menos 8 caracteres.");
+                return; 
+            }
 
-                if (password !== confirmPassword) {
-                    alert("Error: Las contraseñas no coinciden.");
-                    return; 
-                }
+            if (password !== confirmPassword) {
+                alert("Error: Las contraseñas no coinciden.");
+                return; 
+            }
 
-                showLoader();
-                
-                setTimeout(() => {
+            showLoader();
+            
+            try {
+                const response = await fetch('http://localhost:3000/usuarios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // Enviamos el objeto completo al backend
+                    body: JSON.stringify({ nombre, apellido, email, password })
+                });
+
+                const resultado = await response.json();
+
+                if (response.ok) {
+                    alert("¡Usuario creado con éxito! Ya podés iniciar sesión.");
                     registroForm.reset();
-                    window.location.href = "/pages/login.html"; 
-                }, 2000); // 2 segundos
+                    window.location.href = "/pages/login.html";  // redirige a login
+                } else {
+                    alert(resultado.error); 
+                    hideLoader();
+                }
 
             } catch (error) {
-                console.error("Falló la validación:", error);
-                hideLoader(); // Si la validación falla, ocultamos el loader
+                console.error("Error de red al registrar:", error);
+                alert("No se pudo conectar con el servidor para completar el registro.");
+                hideLoader();
             }
-            
-            
-        
-            // registroForm.reset();
         });
     }
 
     // --- página del carrito
-     cartItemsContainer = document.getElementById("cart-items-container");
+    let cartItemsContainer = document.getElementById("cart-items-container");
     if (cartItemsContainer) {
         renderizarCarrito();
 
@@ -289,13 +350,53 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
         // Botón Finalizar Compra
-        const checkoutBtn = document.getElementById("checkout-btn");
-        if (checkoutBtn) {
-            checkoutBtn.addEventListener("click", () => {
-                alert("¡Gracias por tu compra!");
-                localStorage.removeItem('carrito');
-                // Redirección absoluta al inicio
-                window.location.href = "/";
+        //  Finalizar Compra de manera asíncrona con el Back
+        const btnFinalizar = document.getElementById("checkout-btn");
+        if(btnFinalizar){
+            btnFinalizar.addEventListener("click", async () => {
+                const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                
+                if (carrito.length === 0) {
+                    alert("Tu carrito está vacío.");
+                    return;
+                }
+
+                if(confirm("¡Está seguro de finalizar tu compra? Tenemos mucha variedad de productos que podrían interesarle.")) {
+                    showLoader(); // Mostramos el loader de espera
+
+                    // Armamos el paquete de datos para el servidor
+                    const datosCompra = {
+                        usuarioEmail: sessionStorage.getItem('usuario') || "invitado@planteria.com",
+                        productos: carrito // Mandamos el array completo del carrito
+                    };
+
+                    try {
+                        // Enviamos la orden de compra al Backend via POST
+                        const response = await fetch('http://localhost:3000/ventas', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(datosCompra)
+                        });
+
+                        const resultado = await response.json();
+
+                        if (response.ok) {
+                            alert(`Compra realizada con éxito! Orden N°: ${resultado.id_orden}`);
+                            localStorage.removeItem('carrito'); // Vaciamos el carrito local
+                            window.location.href = "../index.html"; // Volvemos al home
+                        } else {
+                            alert(`Error al procesar la compra: ${resultado.error}`);
+                        }
+
+                    } catch (error) {
+                        console.error("Error de red al intentar comprar:", error);
+                        alert("No se pudo conectar con el servidor para finalizar la compra.");
+                    } finally {
+                        hideLoader(); // Apagamos el loader pase lo que pase
+                    }
+                }
             });
         }
     }
@@ -371,7 +472,7 @@ document.addEventListener("DOMContentLoaded", function() {
                      cantidad = parseInt(cantidadSpan.textContent);
                 }
 
-                // 3. Guardar en LocalStorage
+                // Guardar en LocalStorage
                 if (producto) {
                     agregarAlLocalStorage(producto, cantidad);
                 }
@@ -396,7 +497,7 @@ document.addEventListener("DOMContentLoaded", function() {
     localStorage.setItem('carrito', JSON.stringify(carrito));
 
     // Usamos showToast si existe, o alert como fallback
-    const mensaje = `¡Agregaste ${cantidad} unidad(es) de "${producto.titulo}" al carrito!`;
+    const mensaje = `¡Agregaste ${cantidad} unidad(es) de "${producto.nombre}" al carrito!`;
     
     if (typeof showToast === "function") {
         showToast(mensaje, "success");
@@ -423,64 +524,48 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
 
-        //  Finalizar
-        const btnFinalizar = document.getElementById("checkout-btn");
-        if(btnFinalizar){
-            btnFinalizar.addEventListener("click", () => {
-                alert("¡Compra realizada con éxito!");
-                localStorage.removeItem('carrito');
-                window.location.href = "../index.html";
-            });
-        }
     }
 
     function renderizarPaginaCarrito() {
-        const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-        const container = document.getElementById("cart-items-container");
-        const summary = document.getElementById("cart-summary");
-        const totalSpan = document.getElementById("cart-total-price");
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const container = document.getElementById("cart-items-container");
+    const summary = document.getElementById("cart-summary");
+    const totalSpan = document.getElementById("cart-total-price");
 
-        // carrito vacío
-        if (carrito.length === 0) {
-            container.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío 🛒</p>' +
-                                   '<a href="productos.html" class="btn">Ver Productos Disponibles</a>';
-            
-            // Forzamos  $0
-            if (totalSpan) totalSpan.textContent = "$0";
-            
-            // Ocultamos el resumen
-            if (summary) summary.classList.add("hidden");
-            return;
-        }
-
-        // si hay productos
-        if (summary) summary.classList.remove("hidden");
-        
-        let totalAcumulado = 0;
-
-        container.innerHTML = carrito.map(item => {
-            const subtotal = item.precio * item.cantidad;
-            totalAcumulado += subtotal;
-            
-            const imgPath = `../img/${item.imagen}`;
-
-            return `
-                <div class="cart-item">
-                    <img src="${imgPath}" alt="${item.titulo}" onerror="this.src='https://via.placeholder.com/80'">
-                    <div class="cart-item-info">
-                        <h4>${item.titulo}</h4>
-                        <p>Precio: $${item.precio}</p>
-                        <p>Cantidad: <strong>${item.cantidad}</strong></p>
-                    </div>
-                    <div class="cart-item-price">$${subtotal}</div>
-                    <button class="cart-item-remove" onclick="eliminarDelCarrito(${item.id})">🗑️</button>
-                </div>
-            `;
-        }).join("");
-
-        // 3. ACTUALIZAR TOTAL 
-        if (totalSpan) totalSpan.textContent = `$${totalAcumulado}`;
+    if (carrito.length === 0) {
+        container.innerHTML = '<p class="empty-cart-message">Tu carrito está vacío 🛒</p>' +
+                               '<a href="productos.html" class="btn">Ver Productos Disponibles</a>';
+        if (totalSpan) totalSpan.textContent = "$0";
+        if (summary) summary.classList.add("hidden");
+        return;
     }
+
+    if (summary) summary.classList.remove("hidden");
+    let totalAcumulado = 0;
+
+    container.innerHTML = carrito.map(item => {
+        const subtotal = item.precio * item.cantidad;
+        totalAcumulado += subtotal;
+        
+        const imgPath = `http://localhost:3000${item.imagen}`;
+
+        // AQUÍ LOS CAMBIOS: item.nombre e impedir bucle en el onerror
+        return `
+            <div class="cart-item">
+                <img src="${imgPath}" alt="${item.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'">
+                <div class="cart-item-info">
+                    <h4>${item.nombre}</h4>
+                    <p>Precio: $${item.precio}</p>
+                    <p>Cantidad: <strong>${item.cantidad}</strong></p>
+                </div>
+                <div class="cart-item-price">$${subtotal}</div>
+                <button class="cart-item-remove" onclick="eliminarDelCarrito(${item.id})">🗑️</button>
+            </div>
+        `;
+    }).join("");
+
+    if (totalSpan) totalSpan.textContent = `$${totalAcumulado}`;
+}
 
     // Función global para poder llamarla desde el onclick del HTML
     window.eliminarDelCarrito = function(id) {

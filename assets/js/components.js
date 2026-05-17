@@ -8,7 +8,7 @@ function renderNavbar(linksArray) {
     const linksHTML = linksArray.map(link => {
         
         let isActive = false;
-        let subLinksHTML = "";
+        let subLinksHTML = ""; 
 
         if (link.subLinks) {
             // si tiene subLinks, hace un dropdown 
@@ -64,23 +64,24 @@ function renderNavbar(linksArray) {
     `;
 }
 
-// CARD
+// CARD PRODUCTO
 function renderProductCard(producto) {
+    const backendURL = 'http://localhost:3000';
+    const imagenCompleta = `${backendURL}${producto.imagen}`;
+
     return `
         <div class="product-card">
-            <img src="${producto.imagen}" alt="${producto.titulo}">
+            <img src="${imagenCompleta}" alt="${producto.nombre}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'">
             <div class="product-card-content">
-                <h3>${producto.titulo}</h3>
-                <p>${producto.descripcion}</p>
+                <h3>${producto.nombre}</h3>
+                <p>${producto.desc}</p>
                 <p class="price">$${producto.precio}</p>
                 
-                <!-- Controles de cantidad -->
                 <div class="quantity-controls">
                     <button class="quantity-btn" data-id="${producto.id}" data-action="decrease">-</button>
                     <span id="quantity-${producto.id}">1</span>
                     <button class="quantity-btn" data-id="${producto.id}" data-action="increase">+</button>
                 </div>
-
                 <a href="#" class="btn add-to-cart-btn" data-id="${producto.id}">Añadir al carrito</a>
             </div>
         </div>
