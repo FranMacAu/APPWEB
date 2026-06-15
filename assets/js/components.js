@@ -1,37 +1,29 @@
-// NAVBAR 
+// NAVBAR
 function renderNavbar(linksArray) {
-    // Detecta si estamos en /pages/ o no
     const logoPath = window.location.pathname.includes("/pages/") ? "../" : "";
-    // Obtiene la ruta incluyendo los parámetros (categoría)
     const currentPath = window.location.pathname + window.location.search;
 
+    // Calculamos el total de unidades en el carrito para el renderizado inicial
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+
     const linksHTML = linksArray.map(link => {
-        
         let isActive = false;
         let subLinksHTML = ""; 
 
         if (link.subLinks) {
-            // si tiene subLinks, hace un dropdown 
             subLinksHTML = `
                 <ul class="dropdown-menu">
                     ${link.subLinks.map(subLink => {
                         const fullSubLinkHref = `${logoPath}${subLink.href}`;
-                        // Verificamos si este sub-link es el activo
-                        if (currentPath.endsWith(subLink.href)) {
-                            isActive = true; // Si un hijo está activo, el padre también
-                        }
+                        if (currentPath.endsWith(subLink.href)) isActive = true;
                         return `<li><a href="${fullSubLinkHref}">${subLink.titulo}</a></li>`;
                     }).join("")}
                 </ul>
             `;
             
-            // Verificamos si el link padre ("Productos Todos") está activo
-            if (currentPath.endsWith(link.href)) {
-                isActive = true;
-            }
-
+            if (currentPath.endsWith(link.href)) isActive = true;
             const activeClass = isActive ? "active" : "";
-            // Añadimos la clase 'dropdown-parent' al <li>
             return `
                 <li class="dropdown-parent ${activeClass}">
                     <a href="${logoPath}${link.href}">${link.titulo}</a>
@@ -39,12 +31,16 @@ function renderNavbar(linksArray) {
                 </li>
             `;
         } else {
-            //  Si es un link normal
-            if (currentPath.endsWith(link.href)) {
-                isActive = true;
-            }
+            if (currentPath.endsWith(link.href)) isActive = true;
             const activeClass = isActive ? "active" : "";
-            return `<li class="${activeClass}"><a href="${logoPath}${link.href}">${link.titulo}</a></li>`;
+            
+            // Inyectamos el badge dinámico si el link es el Carrito
+            let textoLink = link.titulo;
+            if (link.titulo === "Carrito") {
+                textoLink = `Carrito <span class="cart-count">(${totalItems})</span>`;
+            }
+
+            return `<li class="${activeClass}"><a href="${logoPath}${link.href}">${textoLink}</a></li>`;
         }
     }).join(""); 
     
@@ -63,7 +59,6 @@ function renderNavbar(linksArray) {
         </nav>
     `;
 }
-
 // CARD PRODUCTO
 function renderProductCard(producto) {
     const backendURL = 'http://localhost:3000';

@@ -1,6 +1,7 @@
 // Solo se carga en index.html y productos.html
-import { getProductos } from '../api/productos.api.js';
 import { agregarAlLocalStorage } from '../utils/cart.js';
+import { getProductos, getCategorias } from '../api/productos.api.js'; // Importamos getCategoriasapra título dinámico y productos
+
 
 const productsContainer = document.getElementById("product-grid");
 const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -25,30 +26,45 @@ const inicializarCatalogo = async () => {
     }
 
     try {
-        const productos = await getProductos();
-        const urlParams = new URLSearchParams(window.location.search);
-        const categoriaUrl = urlParams.get('categoria');
-        const esPaginaPrincipal = !window.location.pathname.includes("/pages/");
-        
-        let productosParaMostrar = [];
+    const productos = await getProductos();
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoriaUrl = urlParams.get('categoria');
+    const esPaginaPrincipal = !window.location.pathname.includes("/pages/");
+    
+    const titleElement = document.querySelector(".featured-products h2"); // El h2 del HTML
+    let productosParaMostrar = [];
 
-        if (esPaginaPrincipal) {
-            const categoriasHome = [1, 5, 6]; 
-            categoriasHome.forEach(catId => {
-                const productosCategoria = productos.filter(p => p.id_categoria === catId).slice(0, 2); 
-                productosParaMostrar.push(...productosCategoria); 
-            });
-        } else if (categoriaUrl) {
-            productosParaMostrar = productos.filter(p => p.id_categoria === parseInt(categoriaUrl));
-        } else {
-            productosParaMostrar = productos;
+    if (esPaginaPrincipal) {
+        if (titleElement) titleElement.textContent = "Productos Destacados";
+        const categoriasHome = [1, 5, 6]; 
+        categoriasHome.forEach(catId => {
+            const productosCategoria = productos.filter(p => p.id_categoria === catId).slice(0, 2); 
+            productosParaMostrar.push(...productosCategoria); 
+        });
+    } else if (categoriaUrl) {
+        const catIdInt = parseInt(categoriaUrl);
+        productosParaMostrar = productos.filter(p => p.id_categoria === catIdInt);
+        
+        // Buscamos el nombre real de la categoría en el backend para armar el título dinámico
+        try {
+            const categorias = await getCategorias();
+            const categoriaActual = categorias.find(c => c.id === catIdInt);
+            if (categoriaActual && titleElement) {
+                titleElement.textContent = `Categoría: ${categoriaActual.nombre}`;
+            }
+        } catch (catError) {
+            if (titleElement) titleElement.textContent = "Filtrando Productos";
         }
+    } else {
+        if (titleElement) titleElement.textContent = "Todos Nuestros Productos Disponibles";
+        productosParaMostrar = productos;
+    }
 
-        productsContainer.innerHTML = productosParaMostrar.map(prod => renderProductCard(prod)).join("");
-        
-        actualizarBotonesDeCantidad();
-        activarBotonesAgregarCarrito(productos);
-    } catch (error) {
+    productsContainer.innerHTML = productosParaMostrar.map(prod => renderProductCard(prod)).join("");
+    
+    actualizarBotonesDeCantidad();
+    activarBotonesAgregarCarrito(productos);
+} catch (error) {
         productsContainer.innerHTML = "<p>Error al cargar productos.</p>";
     }
 };

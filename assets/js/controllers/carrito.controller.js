@@ -1,7 +1,8 @@
-// Lógica exclusiva de carrito.html
+// controllers/carrito.controller.js - Controlador de checkout con Toasts asíncronos
 import { crearVenta } from '../api/ventas.api.js';
-import { getCarrito, clearCarrito, eliminarDelLocalStorage } from '../utils/cart.js';
-import { showLoader, hideLoader } from '../utils/ui.js';
+import { getCarrito, clearCarrito, eliminarDelLocalStorage, actualizarBadgeNavbar } from '../utils/cart.js';
+import { showLoader, hideLoader, showToast, showConfirmToast } from '../utils/ui.js';
+//import { renderizarNavbar } from '../components.js'; // Importamos función para refrescar el Navbar
 
 const container = document.getElementById("cart-items-container");
 const summary = document.getElementById("cart-summary");
@@ -53,10 +54,16 @@ const renderizarPaginaCarrito = () => {
 
 const btnVaciar = document.getElementById("clear-cart-btn");
 if (btnVaciar) {
-    btnVaciar.addEventListener("click", () => {
-        if (confirm("¿Estás seguro de vaciar el carrito?")) {
+    btnVaciar.addEventListener("click", async () => {
+        // Pausa la ejecución hasta que el usuario hace clic en Sí o No en el Toast
+        const confirmado = await showConfirmToast("¿Estás seguro de vaciar el carrito?");
+        
+        if (confirmado) {
             clearCarrito();
+            actualizarBadgeNavbar(); // Refresca el Navbar para actualizar el contador
             renderizarPaginaCarrito();
+            
+            showToast("Carrito vaciado exitosamente.", "success");
         }
     });
 }
@@ -65,9 +72,15 @@ const btnFinalizar = document.getElementById("checkout-btn");
 if (btnFinalizar) {
     btnFinalizar.addEventListener("click", async () => {
         const carrito = getCarrito();
-        if (carrito.length === 0) return alert("Tu carrito está vacío.");
+        if (carrito.length === 0) {
+            showToast("Tu carrito está vacío.", "error");
+            return;
+        }
 
-        if (confirm("¿Estás seguro de finalizar tu compra?")) {
+        // Llamamos al Toast interactivo
+        const confirmado = await showConfirmToast("¿Estás seguro de finalizar tu compra?");
+        
+        if (confirmado) {
             showLoader();
             try {
                 const datosCompra = {
@@ -75,11 +88,16 @@ if (btnFinalizar) {
                     productos: carrito
                 };
                 const resultado = await crearVenta(datosCompra);
-                alert(`¡Compra realizada con éxito! Orden N°: ${resultado.id_orden}`);
+                
+                showToast(`¡Compra realizada con éxito! Orden N°: ${resultado.id_orden}`, "success");
                 clearCarrito();
-                window.location.href = "../index.html";
+                
+                setTimeout(() => {
+                    window.location.href = "../index.html";
+                }, 2500);
+
             } catch (error) {
-                alert(error.message);
+                showToast(error.message, "error");
             } finally {
                 hideLoader();
             }

@@ -42,9 +42,19 @@ document.addEventListener("click", (event) => {
     if (event.target && event.target.id === "logoutBtn") {
         event.preventDefault();
         showLoader();
+        
         setTimeout(() => {
+            // Limpiamos las variables de estado
             localStorage.removeItem('isLoggedIn');
             sessionStorage.removeItem('usuario');
+            
+            // Destruimos la credencial de seguridad (¡Fundamental!)
+            localStorage.removeItem('token');
+            
+            // Vaciamos el carrito por privacidad
+            localStorage.removeItem('carrito');
+
+            // Redirigimos
             const loginPath = window.location.pathname.includes("/pages/") ? "" : "pages/";
             window.location.href = `${loginPath}login.html`;
         }, 1000);
